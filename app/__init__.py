@@ -1,7 +1,6 @@
 import antlr4
 import importlib
 import itertools
-import json
 import os
 import re
 import subprocess as sp
@@ -46,7 +45,7 @@ class Language:
     """
     Class representing a Language and all of it's Lexing, Parsing, and Listening classes
     """
-    def __init__(self, grammar_config: dict):
+    def __init__(self, grammar_config: dict, custom_listener):
         """
         Take some grammar configuration information and create a language out of it.
             1.  Make sure we have a valid grammar file
@@ -66,28 +65,27 @@ class Language:
         exec("import app.lib." + self.name + "Parser")
         exec("import app.lib." + self.name + "Listener")
 
-        class Listener(eval("app.lib." + self.name + "Listener." + self.name + "Listener")):
+        class Listener(eval("app.lib." + self.name + "Listener." + self.name + "Listener"), custom_listener):
             pass
 
         for rule in grammar_config["rules"]:
             entercmd = "Listener.enter" + grammar_config["rules"][rule].capitalize() +\
-                       " = lambda x,y: print('enter_" + grammar_config["rules"][rule] + "')"
+                       " = Listener.enter_" + rule
             print(entercmd)
             exec(entercmd)
             exitcmd = "Listener.exit" + grammar_config["rules"][rule].capitalize() + \
-                      " = lambda x,y: print('exit_" + grammar_config["rules"][rule] + "')"
+                      " = Listener.exit_" + rule
             print(exitcmd)
             exec(exitcmd)
 
         self.lexer_factory = eval("app.lib." + self.name + "Lexer." + self.name + "Lexer")
         self.parser_factory = eval("app.lib." + self.name + "Parser." + self.name + "Parser")
+        exec("self.parser_factory.entry_point = self.parser_factory." + grammar_config["entry_point"])
         self.listener_factory = Listener
 
     def process(self, filename: str):
         lexer = self.lexer_factory(antlr4.FileStream(filename))
         tokens = antlr4.CommonTokenStream(lexer)
         parser = self.parser_factory(tokens)
-        # TODO: This is the broken step... Figure out how to tell it which rule to start with
-#        parser.expression()
-#        walker = antlr4.ParseTreeWalker()
-#        walker.walk(self.listener_factory(), parser_factory.expression())
+        walker = antlr4.ParseTreeWalker()
+        walker.walk(self.listener_factory(), parser.entry_point())
