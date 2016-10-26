@@ -1,0 +1,13 @@
+{
+  "grammars": {
+    "CPP14": {
+      "file": "C:\\Users\\zephr\\Documents\\grammars-v4\\cpp\\CPP14.g4",
+      "rules": {
+        "class": "classname",
+        "attribute": "attributespecifierseq",
+        "operation": "functiondefinition",
+        "test": "memberspecification"
+      }
+    }
+  }
+}
