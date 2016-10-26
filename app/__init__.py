@@ -91,10 +91,3 @@ class Language:
 #        parser.expression()
 #        walker = antlr4.ParseTreeWalker()
 #        walker.walk(self.listener_factory(), parser_factory.expression())
-
-
-if __name__ == '__main__':
-    config = json.load(open("parser_config"))
-    for grammar_name in config['grammars']:
-        l = Language(config['grammars'][grammar_name])
-        l.process("..\\L2LsuDrvr.h")

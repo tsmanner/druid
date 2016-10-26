@@ -44,4 +44,5 @@ Temporary Items
 
 # ANTLR parsing stuff
 .idea/
-app/lib/*
+/app/lib/*
+/app/parser_config
