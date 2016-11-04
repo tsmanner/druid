@@ -1,6 +1,7 @@
 from unittest import TestCase
 
 import app
+import os
 
 
 class TestLanguage(TestCase):
@@ -27,7 +28,7 @@ class TestLanguage(TestCase):
     def setUp(self):
         self.grammars = {
             "CPP14": {
-                "file": "CPP14.g4",
+                "file": os.path.dirname(__file__) + os.sep + "CPP14.g4",
                 "rules": {
                     "class": "typeparameter",
                     "attribute": "attributespecifierseq",
