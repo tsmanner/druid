@@ -3,7 +3,7 @@ import importlib
 import itertools
 import os
 import re
-import subprocess as sp
+import subprocess
 
 
 """
@@ -58,7 +58,7 @@ class Language:
                            '-Dlanguage=Python3',
                            '-o', os.path.dirname(__file__) + os.sep + 'lib',
                            grammar_config['file']])
-        sp.run(gencmd, stdout=sp.PIPE)
+        subprocess.run(gencmd, stdout=subprocess.PIPE)
         self.name = os.path.basename(grammar_config["file"])[:-3]
         importlib.invalidate_caches()  # Force new imports each time
         exec("import app.lib." + self.name + "Lexer")
