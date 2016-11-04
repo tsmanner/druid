@@ -54,9 +54,15 @@ class Language:
             4.  Assign passthroughs from this instance's listener to the generic listener
         """
         assert grammar_config["file"].endswith(".g4")
+        lib_path = os.path.dirname(__file__) + os.sep + 'lib'
+        try:
+            os.makedirs(lib_path)
+        except OSError:
+            if not os.path.isdir(lib_path):
+                raise
         gencmd = ' '.join(['java', '-jar', antlr_jar,
                            '-Dlanguage=Python3',
-                           '-o', os.path.dirname(__file__) + os.sep + 'lib',
+                           '-o', lib_path,
                            grammar_config['file']])
         subprocess.call(gencmd, stdout=subprocess.PIPE)
         self.name = os.path.basename(grammar_config["file"])[:-3]
